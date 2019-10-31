@@ -36,5 +36,22 @@ change master to master_host='xxx.xx.xx' master_log_file='xxxxx' master_log_pos=
 start slave user='xxx' password='xxxx'; -- 从服务器开启
 ```
 
+#### 半同步复制
+
+```mysql
+install plugin rpl_semi_sync_master soname 'semisync_master.so'; -- master安装半同步插件
+show plugins; -- 检查安装是否成功
+show variables like 'rpl%'; -- 查看半同步配置
+set persist rpl_semi_sync_master_enabled=on; -- 启动半同步
+
+install plugin rpl_semi_sync_slave soname 'semisync_slave.so'; -- slave安装半同步插件
+set persist rpl_semi_sync_slave_enabled=on; -- 启动半同步
+
+stop slave io_thread;
+start slave io_thread user='xxx' password='xxxx'; -- 重启复制链路
+
+show global status like 'rpl%'; -- 查看启动状态
+```
+
 
 
